@@ -1,0 +1,14 @@
+{
+  "name": "txtsub",
+  "version": "0.0.1",
+  "description": "txtsub is a pub/sub implementation using text file",
+  "main": "index.js",
+  "scripts": {
+    
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inherits": "^2.0.1"
+  }
+}
