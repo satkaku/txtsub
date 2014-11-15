@@ -1,4 +1,6 @@
 var Channel = require("./lib/channel.js");
+var Emitter = require("events").EventEmitter;
+var inherits = require("inherits");
 var fs = require("fs");
 
 module.exports = Client;
@@ -7,21 +9,31 @@ function Client(opts) {
 	if (!(this instanceof Client)) return new Client();
 	this.channels = {};
 }
-Client.prototype.publish = function(file, str) {
+inherits(Client, Emitter);
 
+Client.prototype.publish = function(file, str) {
+	var self = this;
 	fs.writeFile(file, str, function(err){
-		console.log("write");
+		if (err) { return self.error(err); }
 	});
 
 };
 Client.prototype.subscribe = function(file, callback) {
+	var self = this;
+
 	var ch = new Channel({ file: file });
 	ch.on("change", function(content){
 		callback(content);
+	});
+	ch.on("error", function(err){
+		self.error(err);
 	});
 	ch.listen();
 	this.channels[file] = ch;
 };
 Client.prototype.unsubscribe = function(file) {
 	this.channels[file].close();
+};
+Client.prototype.error = function(err) {
+	this.emit("error", err);
 };
