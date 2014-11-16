@@ -1,14 +1,17 @@
 {
   "name": "txtsub",
   "version": "0.0.1",
-  "description": "txtsub is a pub/sub implementation using text file",
+  "description": "txtsub is a Pub/sub for Node.js with text file",
   "main": "index.js",
-  "scripts": {
-    
-  },
+  "scripts": {},
   "author": "",
   "license": "ISC",
   "dependencies": {
     "inherits": "^2.0.1"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.0.1",
+    "should": "^4.3.0"
   }
 }
