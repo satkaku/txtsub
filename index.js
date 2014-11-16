@@ -11,10 +11,11 @@ function Client(opts) {
 }
 inherits(Client, Emitter);
 
-Client.prototype.publish = function(file, str) {
+Client.prototype.publish = function(file, str, callback) {
 	var self = this;
-	fs.writeFile(file, str, function(err){
+	fs.appendFile(file, str, function(err){
 		if (err) { return self.error(err); }
+		if (callback) { callback(); }
 	});
 
 };

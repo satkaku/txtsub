@@ -17,3 +17,16 @@ setTimeout(function(){
 	pub.publish("test.txt", "hello");	// "sub hello"
 }, 1000);
 ```
+
+## Install
+```
+npm install txtsub
+```
+
+## Error Handling
+```javascript
+var client = client();
+client.on("error", function(err){
+	// some error
+});
+```

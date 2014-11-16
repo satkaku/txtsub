@@ -2,10 +2,17 @@
   "name": "txtsub",
   "version": "0.0.1",
   "description": "txtsub is a Pub/sub for Node.js with text file",
+  "homepage": "http://github.com/satkaku/txtsub",
   "main": "index.js",
-  "scripts": {},
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "test": "mocha ./test/*"
+  },
+  "author": "satkaku",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/satkaku/txtsub.git"
+  },
   "dependencies": {
     "inherits": "^2.0.1"
   },
