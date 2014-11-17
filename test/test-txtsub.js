@@ -1,5 +1,6 @@
 var should  = require("should");
 var fs 		= require("fs");
+var async 	= require("async");
 var client  = require("../index.js");
 
 var TXT_FILE = "test/test.txt";
@@ -16,7 +17,7 @@ describe("subscribe", function(){
 	it("if file change, notify subscriber its content", function(done){
 		var sub = client();
 		sub.subscribe(TXT_FILE, function(content){
-			should(content).equal("hello");
+			content.raw.should.equal("hello");
 			sub.unsubscribe(TXT_FILE);
 			done();
 		});
@@ -30,6 +31,33 @@ describe("subscribe", function(){
 		});
 		sub.subscribe("invalid.txt", function(content){});
 		delayWrite("hello");
+	});
+
+	it("if file change, subscriber can get diff", function(done){
+		var sub = client();
+		var count = 0;
+		sub.subscribe(TXT_FILE, function(content){
+			if (count === 0) {
+				content.raw.should.equal("hello");
+			}
+			if (count === 1) {
+				content.raw.should.equal("helloworld");
+				content.diff.forEach(function(each){
+					if (each.added) {
+						each.value.should.equal("world");
+						sub.unsubscribe(TXT_FILE);
+						done();
+					}
+				});
+			}
+
+			count++;
+		});
+		
+		var pub = client();
+		pub.publish(TXT_FILE, "hello", function(){
+			pub.publish(TXT_FILE, "world", function(){});
+		});
 	});
 	
 });
@@ -65,8 +93,9 @@ describe("publish", function(){
 	});
 });
 
-function delayWrite(txt) {
+function delayWrite(txt, time) {
+	time = time || 500;
 	setTimeout(function(){
 		fs.writeFile(TXT_FILE, txt, function(){});
-	},500);
+	},time);
 }

@@ -9,7 +9,8 @@ var client = require("./index.js");
 
 var sub = client();
 sub.subscribe("test.txt", function(data){
-	console.log("sub", data);
+	console.log("alltext", data.raw);
+	console.log("diff", data.diff);
 });
 
 var pub = client();
