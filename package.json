@@ -1,6 +1,6 @@
 {
   "name": "txtsub",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "txtsub is a Pub/sub for Node.js with text file",
   "homepage": "http://github.com/satkaku/txtsub",
   "main": "index.js",

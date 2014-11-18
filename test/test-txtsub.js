@@ -5,6 +5,32 @@ var client  = require("../index.js");
 
 var TXT_FILE = "test/test.txt";
 
+describe("onready", function(){
+	beforeEach(function (done) {
+		fs.writeFile(TXT_FILE, "ignore", function(){ done(); });
+	});
+	afterEach(function (done) {
+		fs.unlink(TXT_FILE, function(){ done(); });
+	});
+
+	it("That contents before watch, is ignored in diff", function(done){
+		var sub = client();
+		sub.subscribe(TXT_FILE, function(content){
+			content.diff.forEach(function(each){
+				if (each.added) {
+					each.value.should.equal("add");
+					sub.unsubscribe(TXT_FILE);
+					done();
+				}
+			});
+		});
+
+		delayWrite("add");
+	})
+
+});
+
+
 describe("subscribe", function(){
 
 	beforeEach(function (done) {
@@ -22,7 +48,7 @@ describe("subscribe", function(){
 			done();
 		});
 		delayWrite("hello");
-	})
+	});
 
 	it("if file isn't exists, notify subscriber error", function(done){
 		var sub = client();
@@ -37,14 +63,15 @@ describe("subscribe", function(){
 		var sub = client();
 		var count = 0;
 		sub.subscribe(TXT_FILE, function(content){
+
 			if (count === 0) {
-				content.raw.should.equal("hello");
+				content.raw.should.equal("diff");
 			}
 			if (count === 1) {
-				content.raw.should.equal("helloworld");
+				content.raw.should.equal("diffadd");
 				content.diff.forEach(function(each){
 					if (each.added) {
-						each.value.should.equal("world");
+						each.value.should.equal("add");
 						sub.unsubscribe(TXT_FILE);
 						done();
 					}
@@ -55,11 +82,13 @@ describe("subscribe", function(){
 		});
 		
 		var pub = client();
-		pub.publish(TXT_FILE, "hello", function(){
-			pub.publish(TXT_FILE, "world", function(){});
-		});
+		setTimeout(function(){
+			pub.publish(TXT_FILE, "diff", function(){
+				pub.publish(TXT_FILE, "add", function(){});
+			});
+		}, 300);
+		
 	});
-	
 });
 
 describe("publish", function(){
